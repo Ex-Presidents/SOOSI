@@ -5,6 +5,7 @@ using System.Text;
 using System.Data;
 using MySql.Data;
 using MySql.Data.MySqlClient;
+using SOOSI.Entities;
 
 namespace SOOSI
 {
@@ -35,6 +36,23 @@ namespace SOOSI
                     {
                         Command.CommandText = "CREATE TABLE 'Bans' ()";
                     }
+                }
+            }
+        }
+
+        public static void Ban(Ban ban)
+        {
+            using (MySqlConnection Connection = new MySqlConnection(SOOSI.Instance.Connection))
+            {
+                using (MySqlCommand c = new MySqlCommand("INSERT INTO `Bans` VALUES (@victim, @judge, @reason, @issued, @length)"))
+                {
+                    c.Parameters.AddWithValue("victim", ban.VictimId);
+                    c.Parameters.AddWithValue("judge", ban.IssuerId);
+                    c.Parameters.AddWithValue("reason", ban.Reason);
+                    c.Parameters.AddWithValue("issued", ban.TimeIssued);
+                    c.Parameters.AddWithValue("length", ban.BanLength);
+
+                    c.ExecuteNonQuery();
                 }
             }
         }
